@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <style>
+        #block {
+            width: 300px;
+            height: 100px;
+            border: 1px salmon solid;
+            /* position: absolute; */
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #data {
+            padding: 10px;
+            border: 1px #ccc solid;
+            position: relative;
+        }
+    </style>
+    <div>
+        <span id="data" draggable="true" ondragstart="drapstart(event)">drag me </span>
+        <div id="block" ondragover="over(event)" ondrop="drop(event)"></div>
+    </div>
+
+    <script>
+        function drapstart(ev) {
+            /* console.log("onstart") */
+            ev.dataTransfer.setData("data", ev.target.id)
+            ev.dataTransfer.setData("X1", event.clientX)
+            ev.dataTransfer.setData("Y1", event.clientY)
+            ev.dataTransfer.setData("Top", ev.target.offsetTop)
+            ev.dataTransfer.setData("Left", ev.target.offsetLeft)
+            /* ev.dataTransfer.setData("LocalX", ev.target.offsetTop)
+            ev.dataTransfer.setData("LocalY", ev.target.offsetLeft) */
+            console.log("A", event.clientX);
+
+        }
+
+        function over(ev) {
+            ev.preventDefault()
+            /* console.log("over"); */
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var dragged = document.getElementById(ev.dataTransfer.getData("data"))
+            /* var block=document.getElementById("block").appendChild(dragged) */
+            /* var block=document.getElementById("block").appendChild(document.getElementById("data")) */
+            var X1 = ev.dataTransfer.getData("X1");
+            var Y1 = ev.dataTransfer.getData("Y1");   //上一次鼠标位置
+            var X2 = window.event.clientX;
+            var Y2 = window.event.clientY;  //当前鼠标位置
+            var Top = ev.dataTransfer.getData("Top");
+            var Left = ev.dataTransfer.getData("Left");
+            /* console.log(ev.target.offsetTop); */
+            var positionX = Left - (X1 - X2);
+            var positionY = Top - (Y1 - Y2);
+
+            var maxW = ev.target.clientWidth - dragged.clientWidth
+            dragged.style.position = "absolute";
+            dragged.style.left = positionX + "px"
+            dragged.style.top = positionY + "px"
+            console.log("a:", maxW, dragged.offsetLeft);
+
+            if (maxW <= dragged.offsetLeft) {
+                alert("exceed window !")
+                /* dragged.style.position = "relative"; */
+                dragged.style.left = Left +"px";
+                dragged.style.top = Top + "px";
+            }
+            /* console.log("drop",X2-X1,Y2-Y1)
+            console.log("top,left",Left,Top)*/
+            console.log("positionX,positionX", positionX, positionY)
+
+            console.log(
+                ev.target.clientWidth, ev.target.clientHeight,
+                dragged.clientWidth, dragged.clientHeight,
+            );
+
+
+        }
+    </script>
+</body>
+
+</html>
