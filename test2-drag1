@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        #app {
+            border: 1px #ff0 solid;
+            width: 200px;
+            height: 200px;
+            margin-left: 50px;
+        }
+
+        #data {
+            padding: 10px;
+            border: 1px #ccc solid;
+            position: relative;
+        }
+    </style>
+
+    <span id="data" draggable="true" ondragstart="drap(event)">dragable</span>
+    <div id="app" ondrop="onndrop(event)" ondragover="over(event)"></div>
+    <script>
+        function drap(ev) {
+            ev.dataTransfer.setData("Text", ev.target.id);
+            //获取div初始位置距离窗口的偏移量
+            ev.dataTransfer.setData("Left", ev.target.offsetLeft);
+            ev.dataTransfer.setData("Top", ev.target.offsetTop);
+            //获取开始拖动时，鼠标的初始位置
+            var e = event || window.event;
+            var mouseX = e.clientX;
+            var mouseY = e.clientY;
+            ev.dataTransfer.setData("X1", mouseX);
+            ev.dataTransfer.setData("Y1", mouseY);
+            console.log("asdf:",ev.target.offsetTop);
+        }
+
+        function onndrop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("Text");
+            var left = ev.dataTransfer.getData("Left");
+            var top = ev.dataTransfer.getData("Top");
+            var X1 = ev.dataTransfer.getData("X1");
+            var Y1 = ev.dataTransfer.getData("Y1");
+
+            var domObj = document.getElementById(data);
+            var h = domObj.clientHeight;
+            var w = domObj.clientWidth;
+            domObj.style.position = "absolute";
+
+
+            var e = event || window.event;
+            var mouseX = e.clientX;
+            var mouseY = e.clientY;
+
+            /* 
+                # mouseX :2 鼠标事件相对于浏览器位置   e.clientX
+                # X1     :1 鼠标事件相对于浏览器位置   e.clientX
+                # top    :1  相对于非static的祖级位置（body）   ev.target.offsetTop
+             */
+            domObj.style.top = top - (Y1 - mouseY) + "px";
+            domObj.style.left = left - (X1 - mouseX) + "px";
+            console.log(domObj.style.top,domObj.style.left);  //相对于浏览器的
+            console.log(top,left);
+            console.log(Y1,mouseY);
+            
+        }
+
+        function over(ev) {
+           ev.preventDefault();
+        }
+
+    </script>
+</body>
+
+</html>
